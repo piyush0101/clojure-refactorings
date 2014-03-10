@@ -53,7 +53,10 @@
              (wrap-fn-in-defn 'add '((fn [] (+ 1 2)))) => '(defn add [] (fn [] (+ 1 2))))
 
        (fact "it wraps an anonymous function (fn) with multiple non nested forms in a named function (defn)"
-             (wrap-fn-in-defn 'add-and-sub '((fn [] (+ 1 2) (- 1 2)))) => '(defn add-and-sub [] (fn [] (+ 1 2) (- 1 2)))))
+             (wrap-fn-in-defn 'add-and-sub '((fn [] (+ 1 2) (- 1 2)))) => '(defn add-and-sub [] (fn [] (+ 1 2) (- 1 2))))
+
+       (fact "it wraps an anonymous function (fn) with args in a named function (defn)"
+             (wrap-fn-in-defn 'add '((fn [a b] (+ a b)))) => '(defn add [a b] (fn [a b] (+ a b)))))
 
 (facts "about `extract-and-replace-anonymous-fn`"
        (fact "it replaces anonymous fn with no arguments with function call"
@@ -64,6 +67,13 @@
 
        (fact "it replaces anonymous fn with multiple arguments with a function call"
              (:call (extract-and-replace-anonymous-fn 'add '(fn [a b] (+ a b)))) => '(add a b)))
+
+(facts "about `wrap-and-replace-anonymous-fn"
+       (fact "it replaces anonymous fn with no arguments with a function call"
+             (:call (wrap-and-replace-anonymous-fn 'add '((fn [] (+ 1 2))))) => '(add))
+
+       (fact "it replaces anonymous fn with arguments with a function call"
+             (:call (wrap-and-replace-anonymous-fn 'add '((fn [a b] (+ a b))))) => '(add a b)))
 
 (facts "about `into-seq`"
        (fact "it converts two non nested forms into a seq with two forms"
