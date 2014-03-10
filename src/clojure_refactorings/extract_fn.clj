@@ -16,6 +16,12 @@
     (throw (Exception. "not a valid lisp form"))
   (cons 'defn (cons name (drop 1 body)))))
 
+(defn wrap-fn-in-defn
+  [name fn-body]
+  (if-not (seq? fn-body)
+    (throw (Exception. "not a valid lisp form"))
+   (concat `(~(symbol "defn") ~name []) fn-body)))
+
 (defn extract-and-replace-defn
   [name body]
   {:fn (extract-defn name body)

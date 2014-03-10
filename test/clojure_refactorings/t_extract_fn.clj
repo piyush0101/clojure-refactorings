@@ -48,6 +48,13 @@
        (fact "it converts a fn with multiple arguments to a defn with a given name and multiple arguments"
              (extract-defn-from-fn 'add '(fn [a b] (+ a b))) => '(defn add [a b] (+ a b))))
 
+(facts "about `wrap-fn-in-defn`"
+       (fact "it wraps an anonymous function (fn) with a single form in a named function (defn)"
+             (wrap-fn-in-defn 'add '((fn [] (+ 1 2)))) => '(defn add [] (fn [] (+ 1 2))))
+
+       (fact "it wraps an anonymous function (fn) with multiple non nested forms in a named function (defn)"
+             (wrap-fn-in-defn 'add-and-sub '((fn [] (+ 1 2) (- 1 2)))) => '(defn add-and-sub [] (fn [] (+ 1 2) (- 1 2)))))
+
 (facts "about `extract-and-replace-anonymous-fn`"
        (fact "it replaces anonymous fn with no arguments with function call"
              (:call (extract-and-replace-anonymous-fn 'add '(fn [] (+ 1 2)))) => '(add))
